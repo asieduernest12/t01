@@ -218,4 +218,11 @@ function getSqlite3(): SQLite3
 }
 
 
+function testSQLite3($db){
+    $db->exec("INSERT INTO foo (id, bar) VALUES (1, 'This is a test')");
+}
+
+
 writeData(getSqlite3(), null, "new_user", "email@domain.com", "{}", userExists(getSqlite3(), "new_user"));
+
+testSQLite3(getSqlite3());
