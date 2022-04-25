@@ -1,0 +1,27 @@
+.flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 25%;
+}
+
+.txt {
+    padding-left: 20px;
+    text-align: justify;
+}
+
+.about p {
+    padding: 0;
+}
+
+.login-txt {
+    padding-top: 20px;
+}
+
+.name-link {
+    color: white !important;
+  }
+
+  .padding-1 {
+      padding:1.5rem;
+  }

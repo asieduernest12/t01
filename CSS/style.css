@@ -1,0 +1,209 @@
+.image {
+  background-color: #490D40;
+  background: url("../Images/roadimage.jpg") no-repeat center center;
+  background-size: cover;
+  height: 570px;
+  margin-top: -20px;
+}
+
+.image .heading {
+  color: white;
+  text-align: center;
+  padding-top: 200px;
+}
+
+.image p {
+  text-align: center;
+  padding: 20px 60px;
+}
+
+.image p .btn {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px;
+  font-size: 1.2em;
+}
+
+.image p .btn:hover {
+  color: #C57ED3;
+  border-color: #C57ED3;
+}
+
+.navbar {
+  height: 80px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  z-index: 100;
+  transition: background-color 1s ease 0s;
+}
+
+.navbar-default .navbar-brand {
+  font-size: 40px !important;
+  font-weight: 600;
+  margin-top: 10px;
+  color: white;
+}
+
+.navbar-default .navbar-brand:hover {
+  color: #C57ED3;
+  border: 1px solid #C57ED3;
+}
+
+.navbar-default .navbar-nav>li>a {
+  font-size: 20px;
+  color: white;
+  margin: 10px 5px 5px 5px;
+}
+
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:active,
+.navbar-default .navbar-nav>li>a:focus {
+  color: #C57ED3;
+  border: 1px solid #C57ED3;
+}
+
+.navbar-default .navbar-nav>li>a:visited {
+  color: #C57ED3;
+  text-decoration: none;
+}
+
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:hover,
+.navbar-default .navbar-nav>.active>a:focus {
+  background-color: transparent;
+  color: #C57ED3;
+}
+
+.navbar-default .navbar-toggle {
+  border-color: #C57ED3;
+}
+
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+  background-color: #490D40;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+  color: #C57ED3;
+  background-color: #C57ED3;
+}
+
+.navbar-default .navbar-collapse.collapse.in ul {
+  background-color: #490D40;
+}
+
+/* Solid class attached on scroll past first section */
+.navbar.solid {
+  background-color: #490D40;
+  transition: background-color 1s ease 0s;
+  box-shadow: 0 0 4px grey;
+}
+
+.navbar.solid .navbar-brand {
+  color: #C57ED3;
+  transition: color 1s ease 0s;
+}
+
+.navbar.solid .navbar-nav>li>a {
+  color: #C57ED3;
+  transition: color 1s ease 0s;
+}
+
+.name-link {
+  color: white !important;
+}
+.about {
+  color: #490D40;
+  text-align: center;
+}
+
+.about h2,
+h1 {
+  padding-top: 100px;
+}
+
+.about p {
+  padding: 20px 80px;
+}
+
+.site-footer {
+  background-color: #490D40;
+  padding: 45px 0 20px;
+  font-size: 15px;
+  line-height: 24px;
+  color: #737373;
+}
+
+.site-footer hr {
+  border-top-color: #bbb;
+  opacity: 0.5
+}
+
+.site-footer hr.small {
+  margin: 20px 0
+}
+
+.site-footer h6 {
+  color: #fff;
+  font-size: 16px;
+  text-transform: uppercase;
+  margin-top: 5px;
+  letter-spacing: 2px
+}
+
+.site-footer a {
+  color: #737373;
+}
+
+.site-footer a:hover {
+  color: #3366cc;
+  text-decoration: none;
+}
+
+.footer-links {
+  padding-left: 0;
+  list-style: none
+}
+
+.footer-links li {
+  display: block
+}
+
+.footer-links a {
+  color: #737373
+}
+
+.footer-links a:active,
+.footer-links a:focus,
+.footer-links a:hover {
+  color: #3366cc;
+  text-decoration: none;
+}
+
+.footer-links.inline li {
+  display: inline-block
+}
+
+img {
+  width: auto;
+  height: 250px;
+}
+
+@media (max-width:991px) {
+  .site-footer [class^=col-] {
+    margin-bottom: 30px
+  }
+}
+
+@media (max-width:767px) {
+  .site-footer {
+    padding-bottom: 0
+  }
+}
+
+.mx-auto {
+  margin-right: auto;
+  margin-left: auto;
+}
