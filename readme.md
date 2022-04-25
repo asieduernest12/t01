@@ -6,3 +6,8 @@ how to copy changes to server
 4. type ```git push origin main```
 
 
+refresh code on your server
+1. ssh into server
+2. type or copy and past ```cd website/TestingDemoGit```
+3. type or copy and past ```git pull origin main```
+

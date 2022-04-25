@@ -232,4 +232,4 @@ function testSQLite3($db)
 echo "testing sqlite ";
 
 testSQLite3(getSqlite3());
-// writeData(getSqlite3(), null, "new_user", "email@domain.com", "{}", userExists(getSqlite3(), "new_user"));
+writeData(getSqlite3(), null, "new_user", "email@domain.com", "{}", userExists(getSqlite3(), "new_user"));
