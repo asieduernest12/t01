@@ -225,6 +225,8 @@ function testSQLite3($db)
 {
     echo "<br> testing sqlite now";
     $db->exec("INSERT INTO foo (id, bar) VALUES (1, 'This is a test')");
+    echo "<br> testing sqlite now:complete";
+
 }
 
 echo "testing sqlite ";
