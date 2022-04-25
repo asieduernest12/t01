@@ -223,6 +223,7 @@ function testSQLite3($db)
     $db->exec("INSERT INTO foo (id, bar) VALUES (1, 'This is a test')");
 }
 
+echo "testing sqlite ";
 
 testSQLite3(getSqlite3());
 // writeData(getSqlite3(), null, "new_user", "email@domain.com", "{}", userExists(getSqlite3(), "new_user"));
