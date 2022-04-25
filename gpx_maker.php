@@ -219,6 +219,7 @@ function getSqlite3(): SQLite3
 
 
 function testSQLite3($db){
+    echo "<br> testing sqlite now";
     $db->exec("INSERT INTO foo (id, bar) VALUES (1, 'This is a test')");
 }
 
