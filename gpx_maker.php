@@ -92,9 +92,9 @@ $ride_str = <<<RIDE
 RIDE;
 
 // print($ride_str);
-$ride = json_decode($ride_str);
+// $ride = json_decode($ride_str);
 // var_dump($ride);
-print(parseJsonRide($ride));
+// print(parseJsonRide($ride));
 
 
 
