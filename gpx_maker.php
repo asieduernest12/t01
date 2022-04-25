@@ -61,7 +61,6 @@ function wayPointToGpxTrkpt($lat, $lon, $time)
 TRKPT;
 }
 
-echo "hello world";
 
 $ride_str = <<<RIDE
 {
@@ -121,7 +120,7 @@ function readData($mysqli, $user_id)
 }
 
 //write data to  db
-function writeData($sqlitedb,  $user_id, string $username, string $email, string $ride_history_json, $userExists)
+function writeData($sqlitedb, $user_id, string $username, string $email, string $ride_history_json, $userExists)
 {
 
     if (!$userExists) {
@@ -218,12 +217,12 @@ function getSqlite3(): SQLite3
 }
 
 
-function testSQLite3($db){
+function testSQLite3($db)
+{
     echo "<br> testing sqlite now";
     $db->exec("INSERT INTO foo (id, bar) VALUES (1, 'This is a test')");
 }
 
 
-writeData(getSqlite3(), null, "new_user", "email@domain.com", "{}", userExists(getSqlite3(), "new_user"));
-
 testSQLite3(getSqlite3());
+// writeData(getSqlite3(), null, "new_user", "email@domain.com", "{}", userExists(getSqlite3(), "new_user"));
