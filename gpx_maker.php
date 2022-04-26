@@ -31,9 +31,11 @@ ini_set('error_reporting', E_ALL);
 function parseJsonRide($ride)
 {
     $waypoint_gpxs = array_map(function ($waypoint) {
-        return wayPointToGpxTrkpt($waypoint->position->coords->latitude,
-        $waypoint->position->coords->longitude,
-        $waypoint->utc_timestamp);
+        return wayPointToGpxTrkpt(
+            $waypoint->position->coords->latitude,
+            $waypoint->position->coords->longitude,
+            $waypoint->utc_timestamp
+        );
     }, $ride->waypoints); //get the waypoints as an array
 
 
@@ -105,25 +107,35 @@ RIDE;
 
 
 //get data from db
-function readData($mysqli, $user_id)
+function readData(SQLite3 $sqlitedb, $user_id)
 {
-    $query_str = "Select from user where id=?;";
+    $query_str = "Select * from users";
 
-    $stmt = mysqli_prepare($mysqli, $query_str);
-
-    //check  if there is an error on each step
-    //steps => bind parameters => execute the query 
-    if (!mysqli_stmt_bind_param($stmt, 'd', $user_id) || !mysqli_execute($stmt, ['id' => $user_id])) {
-        throw new \Exception("Error db");
+    if (isset($user_id)) {
+        $query_str .= ' where id=?';
     }
 
-    $result = mysqli_stmt_get_result($stmt);
+    // $stmt = mysqli_prepare($mysqli, $query_str);
+    $stmt = $sqlitedb->prepare($query_str);
+
+    //check  if there is an error on each step
+    // //steps => bind parameters => execute the query 
+    // if (!mysqli_stmt_bind_param($stmt, 'd', $user_id) || !mysqli_execute($stmt, ['id' => $user_id])) {
+    //     throw new \Exception("Error db");
+    // }
+
+    if (!$stmt) {
+        throw new Exception("Error: failed to prepare stmt", 1);
+    }
+
+    $result = $stmt->execute();
+
     if (!$result) {
         throw new \Exception("Failed to load data");
     }
 
     //return the result 
-    return mysqli_fetch_assoc($result);
+    return $result;
 }
 
 //write data to  db
@@ -136,10 +148,9 @@ function writeData($sqlitedb, $user_id, string $username, string $email, string 
         }
 
         //   insert new record
-        $query_str = "Insert into users (username,email,ride_history) (?,?,?);";
+        $query_str = "Insert into users (username,email,ride_history) values(?,?,?);";
         return runQuery($sqlitedb, $query_str, 'sss', [$username, $email, $ride_history_json], false);
-    }
-    else {
+    } else {
 
         if (!strlen($username) || !strlen($ride_history_json)) {
             throw new Exception("Update validation Error: check username or ride_history");
@@ -152,13 +163,18 @@ function writeData($sqlitedb, $user_id, string $username, string $email, string 
 
 function userExists($sqlitedb, $username): bool
 {
-    $query_str = "Select count(*) as 'exists' from user where username=?;";
+    $query_str = "Select count(*) as 'exists' from users where username=?;";
 
+    $result = runQuery($sqlitedb, $query_str, 's', [$username], true);
 
-    return runQuery($sqlitedb, $query_str, 's', [$username], true)[0]['exists'];
+    if (!$result) {
+        throw new Exception("Error Processing Request", 1);
+    }
+
+    return  $result->fetchArray(SQLITE3_ASSOC)['exists'];
 }
 
-function runQuery($db, string $query_str, string $types, array $bindings, bool $isSelect)
+function  runQuery(SQLite3 $db, string $query_str, string $types, array $bindings, bool $isSelect)
 {
     if (!isset($isSelect)) {
         throw new Exception("Error: query type not specified, must be true or false");
@@ -179,6 +195,13 @@ function runQuery($db, string $query_str, string $types, array $bindings, bool $
     // if (!mysqli_stmt_bind_param($stmt, $types, $bindings) || !mysqli_execute($stmt)) {
     //     throw new Exception("Error db");
     // }
+
+    if (!$stmt) {
+        echo "Error in fetch " . $db->lastErrorMsg();
+        throw new Exception('Error: failed to prepare $stmt');
+    }
+
+
     if (count($bindings) > 0) {
         foreach ($bindings as $key => $binding) {
             $stmt->bindParam($key, $binding);
@@ -190,7 +213,7 @@ function runQuery($db, string $query_str, string $types, array $bindings, bool $
     if (!$isSelect) {
 
         return $stmt->execute();
-    // return mysqli_stmt_affected_rows($stmt);
+        // return mysqli_stmt_affected_rows($stmt);
     }
 
     //if the query is for select then get the result
@@ -209,18 +232,44 @@ function runQuery($db, string $query_str, string $types, array $bindings, bool $
 
 function writeGpxToFile()
 {
-
 }
 
 function getFileDownload()
 {
-
 }
+
+
+function prepareDB()
+{
+    return <<<QUERY
+
+    -- COMMENT 'containes rides info as json' CHECK (json_valid(`ride_history`)),
+      
+    CREATE TABLE IF NOT EXISTS users (
+    `id` int(11) PRIMARY KEY ,
+    `ride_history` longtext DEFAULT NULL,
+    `username` text DEFAULT NULL,
+    `email` text DEFAULT NULL
+     
+    ) ;
+QUERY;
+}
+
 
 function getSqlite3(): SQLite3
 {
     // return mysqli_connect("localhost", "root", "", "rides");
-    return new SQLite3('mysqlitedb.db');
+
+
+    try {
+        $db = new SQLite3('mysqlitedb.db');
+
+        runQuery($db, prepareDB(), '', [], false);
+
+        return $db;
+    } catch (\Throwable $th) {
+        throw $th;
+    }
 }
 
 
@@ -229,10 +278,18 @@ function testSQLite3($db)
     echo "<br> testing sqlite now";
     $db->exec("INSERT INTO foo (id, bar) VALUES (1, 'This is a test')");
     echo "<br> testing sqlite now:complete";
-
 }
 
 echo "testing sqlite ";
 
-testSQLite3(getSqlite3());
+// testSQLite3(getSqlite3());
 writeData(getSqlite3(), null, "new_user", "email@domain.com", "{}", userExists(getSqlite3(), "new_user"));
+
+
+$result = readData(getSqlite3(), null);
+$res_json=[];
+while($row= $result->fetchArray(SQLITE3_ASSOC)){
+    array_push($res_json,$row);
+}
+
+echo json_encode($res_json);
