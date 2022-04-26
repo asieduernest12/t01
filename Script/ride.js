@@ -122,7 +122,7 @@ function handleSubmit(event) {
 	console.log(event.target);
 
 	//send the recorded ride info back to the server
-	fetch("team10/TestingDemoGit/controller.php?action=upsertride", {
+	fetch("controller.php?action=upsertride", {
 		headers: {
 			"Content-Type": "application/json",
 		},
