@@ -121,7 +121,7 @@ function handleSubmit(event) {
 
 	let { value } = event.target.elements.waypoints_json
 	//send the recorded ride info back to the server
-	fetch("controller.php?action=upsertride", {
+	fetch("/controller.php?action=upsertride", {
 		headers: {
 			"Content-Type": "application/json",
 		},
