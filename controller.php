@@ -56,10 +56,11 @@ function handle()
 
 
     $action = $_GET['action'];
-
+$json_data = json_decode(file_get_contents("php://input"));
     switch ($action) {
         case 'upsertride':
-            upsertRide(json_decode($_POST['data']));
+            upsertRide($json_data->data, $json_data->username);
+            return getRides();
             break;
         case 'deleteride':
             deleteRide($_GET['ride_id']);
@@ -71,19 +72,19 @@ function handle()
             print('Error: operation unspecified');
             throw new Exception("Error: no action specified");
 
-            break;
     }
 }
 
-function getRides()
+function getRides($userid)
 {
 
     echo json_encode(fetchAllAssoc(readData(getSqlite3(), null)));
 }
 
-function upsertRide($ride)
+function upsertRide($ride, $username)
 {
-    echo json_encode($ride);
+    echo($ride);
+    writeData(getSqlite3(), null, $username, 'fake@domain.com', $ride, userExists(getSqlite3(), $username));
 }
 
 function deleteRide($ride_id)

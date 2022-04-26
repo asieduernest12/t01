@@ -77,6 +77,8 @@
             </div>
         </div>
 
+       
+
         <div class="row text-center">
             <span class="waypoint_indicator">
                 <label for="">Waypoints recorded</label>
@@ -86,8 +88,12 @@
 
         <div class="row">
             <form onsubmit="handleSubmit(event)">
-                <textarea name="waypoints_json" id="waypoints_json" cols="30" rows="10" name="data"></textarea>
+                <textarea name="waypoints_json" id="waypoints_json" cols="30" rows="10" name="waypoint_json"></textarea>
                 
+                <div class="row">
+                    <label for="">Username <input type="text" id="username" name="username" required></label>
+                </div>
+
                 <button onclick="clearTextArea(event)">clear</button>
                 
                 <button type="submit">Save</button>

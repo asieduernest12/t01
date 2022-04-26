@@ -119,19 +119,18 @@ function clearTextArea(event) {
 function handleSubmit(event) {
 	event.preventDefault();
 
-	console.log(event.target);
-
+	let { value } = event.target.elements.waypoints_json
 	//send the recorded ride info back to the server
 	fetch("controller.php?action=upsertride", {
 		headers: {
 			"Content-Type": "application/json",
 		},
 		method: "POST",
-		body:JSON.stringify( { data: event.target.elements.data}) ,
+		body: JSON.stringify({ data: value ,username: event.target.elements.username.value})
 	})
 		.then((res) => res.json())
 		.then(console.log)
 		.catch(console.err);
 }
 
-function loadHistory(user_id) {}
+function loadHistory(user_id) { }
