@@ -56,34 +56,48 @@ function handle()
 
 
     $action = $_GET['action'];
-$json_data = json_decode(file_get_contents("php://input"));
+    $json_data = json_decode(file_get_contents("php://input"));
     switch ($action) {
         case 'upsertride':
             upsertRide($json_data->data, $json_data->username);
-            return getRides();
+
+            $json = getRides($user_id = null);
+
+            // if (isset($json_data->transform) && $json_data->transform == true){
+            //    echo parseJsonRide($json);
+            // }
+            echo  $json;
             break;
         case 'deleteride':
             deleteRide($_GET['ride_id']);
             break;
         case 'getrides':
-            getRides($_GET['ride_id']);
+
+            $json = getRides($user_id = null);
+
+            if (isset($_GET['transform']) && $_GET['transform'] == true) {
+
+                $arr_res = array_map(function($ride){return parseJsonRide($ride);},$json);
+                echo implode("",$arr_res);
+                return;
+            }
+            echo  $json;
             break;
         default:
             print('Error: operation unspecified');
             throw new Exception("Error: no action specified");
-
     }
 }
 
 function getRides($userid)
 {
 
-    echo json_encode(fetchAllAssoc(readData(getSqlite3(), null)));
+    return json_encode(fetchAllAssoc(readData(getSqlite3(), null)));
 }
 
 function upsertRide($ride, $username)
 {
-    echo($ride);
+    echo ($ride);
     writeData(getSqlite3(), null, $username, 'fake@domain.com', $ride, userExists(getSqlite3(), $username));
 }
 
