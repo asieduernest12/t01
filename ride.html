@@ -85,7 +85,13 @@
         </div>
 
         <div class="row">
-            <textarea name="waypoints_json" id="waypoints_json" cols="30" rows="10"></textarea>
+            <form onsubmit="handleSubmit(event)">
+                <textarea name="waypoints_json" id="waypoints_json" cols="30" rows="10" name="data"></textarea>
+                
+                <button onclick="clearTextArea(event)">clear</button>
+                
+                <button type="submit">Save</button>
+            </form>
         </div>
 
     </div>
