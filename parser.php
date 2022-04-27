@@ -22,7 +22,7 @@ TRKSEG;
     $trk = <<<TRK
     <trk>
         <ride id="{$ride->id}" ></ride>
-        <name>some name</name>
+        <name>{$ride->name}</name>
         <type>some type</type>
         {$trkseg}
     </trk>
@@ -31,10 +31,28 @@ TRK;
 }
 
 
+function wrapAsGpx($innerContent)
+{
+    return <<<GPXINNER
+            <gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" 
+            creator="Oregon 400t" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd">
+            <metadata>
+            <link href="http://www.garmin.com">
+            <text>Garmin International</text>
+            </link>
+            <time>2009-10-17T22:58:43Z</time>
+        </metadata>
+        {$innerContent}
+
+        </gpx>
+GPXINNER;
+}
+
 
 function wayPointToGpxTrkpt($lat, $lon, $time)
 {
-    
+
     return <<<TRKPT
     <trkpt lat="{$lat}" long="{$lon}">
         <time>{$time}</time>

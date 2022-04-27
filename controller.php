@@ -81,13 +81,16 @@ function handle()
                 echo  toJson($json);
                 break;
             }
+            
 
             $arr_res = array_map(function ($ride) {
 
                 return parseJsonRide($ride);
             }, json_decode($json[0]['ride_history']));
 
-            echo implode("", $arr_res);
+            $output= wrapAsGpx(implode("", $arr_res));
+
+            sendDownloadable('gpxdata.xml',$output);
 
             break;
         default:
@@ -118,5 +121,12 @@ function toJson($data): String
     return json_encode($data);
 }
 
+
+function sendDownloadable(String $filename, $contents){
+
+    header("Content-Disposition:attachment;filename={$filename}");
+
+    print($contents);
+}
 
 handle();
