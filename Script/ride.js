@@ -1,8 +1,10 @@
+// @ts-check
+const KEYS_USERINFO = "userinfo";
 let WAY_POINT_TIME_INTERVAL = 1_000;
 // ride codes here
 let _interval;
 
-/**@typ Map<string,Ride> */
+/**@type Map<string,Ride> */
 let _rides;
 
 /**
@@ -57,7 +59,10 @@ let gpsError = (error) => {
 
 function recordLocationAndTimeStamp(ride) {
 	return (position) =>
-		ride.waypoints.push({ utc_timestamp: new Date().toISOString(), position: { coords: { longitude: position.coords.longitude, latitude: position.coords.latitude } } });
+		ride.waypoints.push({
+			utc_timestamp: new Date().toISOString(),
+			position: { coords: { longitude: position.coords.longitude, latitude: position.coords.latitude } },
+		});
 }
 
 function endRide() {
@@ -119,18 +124,43 @@ function clearTextArea(event) {
 function handleSubmit(event) {
 	event.preventDefault();
 
-	let { value } = event.target.elements.waypoints_json
+	let {
+		username: { value: username },
+		email: { value: email },
+	} = event.target.elements;
+
+	setUserInfo({ username, email });
+
 	//send the recorded ride info back to the server
 	fetch("/controller.php?action=upsertride", {
 		headers: {
 			"Content-Type": "application/json",
 		},
 		method: "POST",
-		body: JSON.stringify({ data: value ,username: event.target.elements.username.value})
+		body: JSON.stringify({ email, username, rides: [..._rides.values()] }),
 	})
 		.then((res) => res.json())
 		.then(console.log)
 		.catch(console.err);
 }
 
-function loadHistory(user_id) { }
+function loadHistory(user_id) {}
+
+function getUserInfo() {
+	return JSON.parse(localStorage.getItem(KEYS_USERINFO) ?? '{"username":"","email":""}');
+}
+
+function setUserInfo(data) {
+	if (!("username" in data && "email" in data)) {
+		throw alert("username and or email missing");
+	}
+
+	localStorage.setItem(KEYS_USERINFO, JSON.stringify(data));
+}
+
+function loadUserInfo({ username, email }) {
+	document.querySelector("input#username").value = username;
+	document.querySelector("input#email").value = email;
+}
+
+loadUserInfo(getUserInfo());

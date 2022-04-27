@@ -57,31 +57,38 @@ function handle()
 
     $action = $_GET['action'];
     $json_data = json_decode(file_get_contents("php://input"));
+
     switch ($action) {
         case 'upsertride':
-            upsertRide($json_data->data, $json_data->username);
+
+
+            upsertRide($json_data->rides, $json_data->username, $json_data->email);
 
             $json = getRides($user_id = null);
 
-            // if (isset($json_data->transform) && $json_data->transform == true){
-            //    echo parseJsonRide($json);
-            // }
-            echo  $json;
+            echo  toJson($json);
+
             break;
         case 'deleteride':
             deleteRide($_GET['ride_id']);
             break;
+
         case 'getrides':
 
             $json = getRides($user_id = null);
 
-            if (isset($_GET['transform']) && $_GET['transform'] == true) {
-
-                $arr_res = array_map(function($ride){return parseJsonRide($ride);},$json);
-                echo implode("",$arr_res);
-                return;
+            if (!isset($_GET['transform']) && $_GET['transform'] !== true) {
+                echo  toJson($json);
+                break;
             }
-            echo  $json;
+
+            $arr_res = array_map(function ($ride) {
+
+                return parseJsonRide($ride);
+            }, json_decode($json[0]['ride_history']));
+
+            echo implode("", $arr_res);
+
             break;
         default:
             print('Error: operation unspecified');
@@ -92,13 +99,13 @@ function handle()
 function getRides($userid)
 {
 
-    return json_encode(fetchAllAssoc(readData(getSqlite3(), null)));
+    return fetchAllAssoc(readData(getSqlite3(), null));
 }
 
-function upsertRide($ride, $username)
+function upsertRide(array $ride, $username, $email)
 {
-    echo ($ride);
-    writeData(getSqlite3(), null, $username, 'fake@domain.com', $ride, userExists(getSqlite3(), $username));
+
+    writeData(getSqlite3(), null, $username, $email, toJson($ride), userExists(getSqlite3(), $username));
 }
 
 function deleteRide($ride_id)
@@ -106,7 +113,10 @@ function deleteRide($ride_id)
     print("delete ride $ride_id");
 }
 
-
+function toJson($data): String
+{
+    return json_encode($data);
+}
 
 
 handle();

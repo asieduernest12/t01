@@ -87,11 +87,15 @@
         </div>
 
         <div class="row">
-            <form onsubmit="handleSubmit(event)">
+            <form onsubmit="handleSubmit(event)" class="w-100 justify-content-center d-flex flex-column mt-2 gap-3">
                 <textarea name="waypoints_json" id="waypoints_json" cols="30" rows="10" name="waypoint_json"></textarea>
                 
                 <div class="row">
-                    <label for="">Username <input type="text" id="username" name="username" required></label>
+                    <label for="">Username <input type="text" id="username" name="username" required class="ml-auto"></label>
+                </div>
+
+                <div class="row">
+                    <label for="">Email <input type="text" required="required" id="email" name="email" type="email"></label>
                 </div>
 
                 <button onclick="clearTextArea(event)">clear</button>

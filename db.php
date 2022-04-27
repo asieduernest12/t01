@@ -41,33 +41,39 @@ function writeData($sqlitedb, $user_id, string $username, string $email, string 
         }
 
         //   insert new record
-        $query_str = "Insert into users (username,email,ride_history) values(?,?,?);";
-        return runQuery($sqlitedb, $query_str, 'sss', [$username, $email, $ride_history_json], false);
+        $query_str = "Insert into users (username,email,ride_history) values (:username,:email,:ride_history);";
+        return runQuery($sqlitedb, $query_str, $type = 'sss', $bindings = [':username' => $username, ':email' => $email, ':ride_history' => $ride_history_json], false);
     } else {
 
         if (!strlen($username) || !strlen($ride_history_json)) {
             throw new Exception("Update validation Error: check username or ride_history");
         }
         //update record
-        $query_str = "Update users set ride_history = ? where username = ?;";
-        return runQuery($sqlitedb, $query_str, $types = "ss", $bindings = [$username, $ride_history_json], $isSelect = false);
+        $query_str = "Update users set ride_history = :ride_history where username = :username;";
+        return runQuery($sqlitedb, $query_str, $types = "ss", $bindings = [':username' => $username,  ':ride_history' => $ride_history_json], $isSelect = false);
     }
 }
 
-function userExists($sqlitedb, $username): bool
+function userExists($sqlitedb, $username, $debug = false): bool
 {
-    $query_str = "Select count(*) as 'exists' from users where username=?;";
+    $query_str = "Select count(*) as 'exists' from users where username=:username;";
 
-    $result = runQuery($sqlitedb, $query_str, 's', [$username], true);
+    $result = runQuery($sqlitedb, $query_str, 's', ['username' => $username], true);
 
     if (!$result) {
         throw new Exception("Error Processing Request", 1);
     }
 
-    return  $result->fetchArray(SQLITE3_ASSOC)['exists'];
+    $res = $result->fetchArray(SQLITE3_ASSOC);
+    
+    if ($debug == true) {
+        print_r($res);
+    }
+
+    return  $res['exists'];
 }
 
-function  runQuery(SQLite3 $db, string $query_str, string $types, array $bindings, bool $isSelect)
+function  runQuery(SQLite3 $db, string $query_str, string $types, array $bindings, bool $isSelect, $debug = false)
 {
     if (!isset($isSelect)) {
         throw new Exception("Error: query type not specified, must be true or false");
@@ -84,8 +90,12 @@ function  runQuery(SQLite3 $db, string $query_str, string $types, array $binding
 
 
     if (count($bindings) > 0) {
+
         foreach ($bindings as $key => $binding) {
-            $stmt->bindParam($key, $binding);
+            if ($debug == true) {
+                print_r([$key, $binding]);
+            }
+            $stmt->bindValue($key, $binding);
         }
     }
 
@@ -96,7 +106,7 @@ function  runQuery(SQLite3 $db, string $query_str, string $types, array $binding
         return $stmt->execute();
     }
 
-   
+
 
     $result = $stmt->execute();
 
@@ -150,10 +160,11 @@ function getSqlite3(): SQLite3
 }
 
 
-function fetchAllAssoc(SQLite3Result $result){
+function fetchAllAssoc(SQLite3Result $result)
+{
     $raw_arr = [];
-    while($row=$result->fetchArray(SQLITE3_ASSOC)){
-        array_push($raw_arr,$row);
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        array_push($raw_arr, $row);
     }
 
     return $raw_arr;

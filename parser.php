@@ -21,7 +21,7 @@ TRKSEG;
 
     $trk = <<<TRK
     <trk>
-        <ride id="{$ride->id}"></ride>
+        <ride id="{$ride->id}" ></ride>
         <name>some name</name>
         <type>some type</type>
         {$trkseg}
@@ -34,7 +34,7 @@ TRK;
 
 function wayPointToGpxTrkpt($lat, $lon, $time)
 {
-    print("parsing waypoint");
+    
     return <<<TRKPT
     <trkpt lat="{$lat}" long="{$lon}">
         <time>{$time}</time>
